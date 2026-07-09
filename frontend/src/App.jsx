@@ -11,7 +11,6 @@ function App() {
   const [activeTab, setActiveTab] = useState('live');
   const [ws, setWs] = useState(null);
   
-  // Live Replay State
   const [subjectId, setSubjectId] = useState(0);
   const [videoId, setVideoId] = useState(0);
   const [speedMs, setSpeedMs] = useState(100);
@@ -21,10 +20,8 @@ function App() {
   const [rawData, setRawData] = useState(null);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   
-  // Upload State
   const [refreshHistory, setRefreshHistory] = useState(0);
 
-  // New States
   const [validSessions, setValidSessions] = useState({});
   const [streamHistory, setStreamHistory] = useState([]);
 
@@ -77,7 +74,6 @@ function App() {
         setProgress({ current: data.current_row, total: data.total_rows });
       }
       
-      // Track history
       setStreamHistory(prev => [...prev, { inference: data.inference, groundTruth: data.ground_truth }]);
     };
     
@@ -136,7 +132,7 @@ function App() {
             </div>
             
             <div className="live-dashboard-grid">
-              {/* Top Controls */}
+              
               <div className="glass-panel controls-panel">
               <div className="control-group">
                 <div>
@@ -189,7 +185,7 @@ function App() {
               </div>
             </div>
 
-            {/* Leaderboard */}
+            
             <div style={{ gridColumn: '1 / 3' }}>
               {progress.total > 0 && (
                 <div style={{ marginBottom: '1.5rem' }}>

@@ -49,8 +49,6 @@ export default function UploadPanel({ onUploadSuccess }) {
       if (!res.ok) {
         setError(data.detail || "Sample run failed");
       } else {
-        // Send fake aggregated result or first row result back up
-        // Calculate average latency from results
         const firstRes = data.results[0];
         onUploadSuccess(data.results); // You can modify depending on how App handles it
       }

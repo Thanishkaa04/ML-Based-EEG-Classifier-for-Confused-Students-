@@ -20,8 +20,6 @@ def main():
     y = df['video_id'].values
     groups = df['subject_id'].values
     
-    # Split based on subject
-    # Train on 0,1,2,3,4,5. Test on 6,7
     train_mask = np.isin(groups, [0, 1, 2, 3, 4, 5])
     test_mask = np.isin(groups, [6, 7])
     
@@ -35,15 +33,12 @@ def main():
     X_train = scaler.fit_transform(X_train_raw)
     X_test = scaler.transform(X_test_raw)
     
-    # 1. Logistic Regression
     print("\nTraining Logistic Regression...")
     lr_model = LogisticRegression(penalty='l1', solver='liblinear', C=1.0, max_iter=50)
     lr_model.fit(X_train, y_train)
     lr_pred = lr_model.predict(X_test)
     print(f"Logistic Regression True Accuracy: {accuracy_score(y_test, lr_pred) * 100:.2f}%")
     
-    # PyTorch models take too long to run locally for a quick test. 
-    # We will just print the logistic regression results.
     print("Test complete.")
 
 if __name__ == "__main__":

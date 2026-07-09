@@ -22,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global states
 models = {}
 scaler = None
 df_full = None
@@ -93,14 +92,11 @@ def startup_event():
         print("Warning: Dataset could not be loaded:", e)
 
 def run_inference(row_features):
-    # row_features is a 1D numpy array of length 36
-    # standardize
     scaled = scaler.transform([row_features])
     tensor_input = torch.tensor(scaled, dtype=torch.float32)
     
     results = {}
     
-    # 1. Random Forest (Scikit-Learn)
     if 'rf' in models:
         start = time.perf_counter()
         rf_pred = models['rf'].predict(scaled)[0]
@@ -113,7 +109,6 @@ def run_inference(row_features):
         }
     
     with torch.no_grad():
-        # 2. EnhancedNN
         t0 = time.perf_counter()
         out_enn = models['enhanced_nn'](tensor_input)
         prob_enn = torch.softmax(out_enn, dim=1)[0].tolist()
@@ -121,7 +116,6 @@ def run_inference(row_features):
         t1 = time.perf_counter()
         results['enhanced_nn'] = {"pred": pred_enn, "latency_ms": (t1-t0)*1000, "probs": prob_enn}
         
-        # 3. RNN
         t0 = time.perf_counter()
         out_rnn = models['rnn'](tensor_input)
         prob_rnn = torch.softmax(out_rnn, dim=1)[0].tolist()
@@ -129,7 +123,6 @@ def run_inference(row_features):
         t1 = time.perf_counter()
         results['rnn'] = {"pred": pred_rnn, "latency_ms": (t1-t0)*1000, "probs": prob_rnn}
         
-        # 4. ResNet
         t0 = time.perf_counter()
         out_resnet = models['resnet'](tensor_input)
         prob_resnet = torch.softmax(out_resnet, dim=1)[0].tolist()
@@ -137,7 +130,6 @@ def run_inference(row_features):
         t1 = time.perf_counter()
         results['resnet'] = {"pred": pred_resnet, "latency_ms": (t1-t0)*1000, "probs": prob_resnet}
         
-        # 5. CNN_RNN
         t0 = time.perf_counter()
         out_cnnrnn = models['cnn_rnn'](tensor_input)
         prob_cnnrnn = torch.softmax(out_cnnrnn, dim=1)[0].tolist()
@@ -198,21 +190,17 @@ async def upload_csv(file: UploadFile = File(...)):
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid CSV format")
         
-    # Validate schema
     missing_cols = [c for c in FEATURE_COLS if c not in df.columns]
     if missing_cols:
         raise HTTPException(status_code=400, detail=f"Missing columns: {missing_cols[:5]}")
         
-    # Run batch inference on first 100 rows to avoid timeout if huge
     sample_df = df.head(100)
     batch_features = sample_df[FEATURE_COLS].values
     
-    # Just run it sequentially for simplicity
     results = []
     for row in batch_features:
         results.append(run_inference(row))
         
-    # Average latency
     avg_latency = {
         'rf': np.mean([r['rf']['latency_ms'] for r in results]),
         'enhanced_nn': np.mean([r['enhanced_nn']['latency_ms'] for r in results]),
@@ -247,7 +235,6 @@ def get_valid_sessions():
     if df_full is None:
         raise HTTPException(status_code=500, detail="Dataset not loaded")
     
-    # Group by subject_id and get unique video_ids for each
     grouped = df_full.groupby('SubjectID')['VideoID'].unique()
     valid_sessions = {str(int(k)): [int(x) for x in v.tolist()] for k, v in grouped.items()}
     return valid_sessions
@@ -256,7 +243,6 @@ def get_valid_sessions():
 def get_sample_schema():
     if df_full is None:
         raise HTTPException(status_code=500, detail="Dataset not loaded")
-    # Return the first row as a dictionary
     sample_row = df_full[FEATURE_COLS].iloc[0].to_dict()
     return sample_row
 

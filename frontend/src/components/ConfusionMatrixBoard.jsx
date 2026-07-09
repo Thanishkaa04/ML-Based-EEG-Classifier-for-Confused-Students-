@@ -12,18 +12,15 @@ export default function ConfusionMatrixBoard({ streamHistory }) {
   const matrices = useMemo(() => {
     if (!streamHistory || streamHistory.length === 0) return null;
     
-    // Initialize 2x2 matrix for each model (Binary Classification: 0 or 1)
     const mats = {};
     MODELS.forEach(m => {
       mats[m.id] = Array(2).fill(0).map(() => Array(2).fill(0));
     });
     
-    // Populate counts
     streamHistory.forEach(point => {
       const actual = point.groundTruth; // 0 or 1
       MODELS.forEach(m => {
         if (point.inference && point.inference[m.id] !== undefined) {
-          // Check if prediction is under "pred" or "prediction" depending on the model backend logic
           const result = point.inference[m.id];
           const predicted = result.pred !== undefined ? result.pred : result.prediction;
           
@@ -48,7 +45,6 @@ export default function ConfusionMatrixBoard({ streamHistory }) {
       <div style={{ display: 'flex', gap: '2rem', overflowX: 'auto', paddingBottom: '1rem' }}>
         {MODELS.map(model => {
           const mat = matrices[model.id];
-          // Find max value for color scaling
           let maxVal = 0;
           mat.forEach(row => row.forEach(val => { if(val > maxVal) maxVal = val; }));
           

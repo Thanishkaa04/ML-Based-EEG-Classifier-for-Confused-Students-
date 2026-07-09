@@ -19,7 +19,6 @@ os.makedirs("backend/models", exist_ok=True)
 
 df = pd.read_csv("EEG_data.csv")
 
-# Feature Engineering
 features = ['Attention', 'Mediation', 'Raw', 'Delta', 'Theta', 'Alpha1', 'Alpha2', 'Beta1', 'Beta2', 'Gamma1', 'Gamma2']
 epsilon = 1e-8
 df['Theta_Beta_Ratio'] = df['Theta'] / (df['Beta1'] + df['Beta2'] + epsilon)
@@ -46,7 +45,6 @@ print(f"Training on {X.shape[1]} Engineered Features...")
 
 from sklearn.ensemble import RandomForestClassifier
 
-# Standard split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 scaler = StandardScaler()

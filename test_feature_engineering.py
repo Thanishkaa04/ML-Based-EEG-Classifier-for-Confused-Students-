@@ -11,17 +11,13 @@ df = pd.read_csv("EEG_data.csv")
 features = ['Attention', 'Mediation', 'Raw', 'Delta', 'Theta', 'Alpha1', 'Alpha2', 'Beta1', 'Beta2', 'Gamma1', 'Gamma2']
 
 print("1. Adding Theta/Beta and other neuro-marker ratios...")
-# Add small epsilon to prevent division by zero
 epsilon = 1e-8
 df['Theta_Beta_Ratio'] = df['Theta'] / (df['Beta1'] + df['Beta2'] + epsilon)
 df['Theta_Alpha_Ratio'] = df['Theta'] / (df['Alpha1'] + df['Alpha2'] + epsilon)
 df['Delta_Theta_Ratio'] = df['Delta'] / (df['Theta'] + epsilon)
 
 print("2. Applying sliding window aggregates (rolling mean & std)...")
-# We must group by Subject and Video to not mix different sessions
 def add_rolling_features(group):
-    # Sort just to be safe, assuming order is chronological
-    # 5 timestep window
     window = 5
     for col in features:
         group[f'{col}_mean_5'] = group[col].rolling(window=window, min_periods=1).mean()
@@ -30,7 +26,6 @@ def add_rolling_features(group):
 
 df_engineered = df.groupby(['SubjectID', 'VideoID']).apply(add_rolling_features).reset_index(drop=True)
 
-# Define final feature list
 base_features = features + ['Theta_Beta_Ratio', 'Theta_Alpha_Ratio', 'Delta_Theta_Ratio']
 rolling_features = [f"{col}_mean_5" for col in features] + [f"{col}_std_5" for col in features]
 final_features = base_features + rolling_features

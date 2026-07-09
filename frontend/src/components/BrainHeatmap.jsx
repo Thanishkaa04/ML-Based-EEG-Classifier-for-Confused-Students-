@@ -19,12 +19,9 @@ const ELECTRODES = [
 
 export default function BrainHeatmap({ rawData }) {
   const [activeBand, setActiveBand] = useState('raw');
-  // In the real system, you'd map rawData to color intensity.
-  // For visual effect, we'll glow randomly if data is streaming, but higher for F7.
   
   const getIntensity = (name) => {
     if (!rawData || rawData.length === 0) return 0;
-    // Mock mapping for visual representation based on rawData presence
     let base = Math.random();
     if (name === 'F7' && activeBand !== 'raw') base = 0.9; // Highlight F7 as per spec
     return base;
@@ -51,7 +48,7 @@ export default function BrainHeatmap({ rawData }) {
       <div className="heatmap-container">
         <svg viewBox="0 0 100 100" className="brain-svg">
           <ellipse cx="50" cy="50" rx="45" ry="55" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-          <path d="M 50 5 L 45 -5 L 55 -5 Z" fill="rgba(255,255,255,0.1)" /> {/* Nose */}
+          <path d="M 50 5 L 45 -5 L 55 -5 Z" fill="rgba(255,255,255,0.1)" /> 
           
           {ELECTRODES.map((elec, i) => {
             const intensity = getIntensity(elec.name);

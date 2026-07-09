@@ -8,19 +8,14 @@ def main():
     print("Loading full dataset...")
     df = pd.read_csv("../../Kaggle_eeg_data.csv")
     
-    # We assume the dataset is in chronological order per session.
-    # We will iterate through each subject, and take the first 80% of their rows for training, 
-    # and the last 20% of their rows for testing.
     
     train_indices = []
     test_indices = []
     
-    # Group by subject_id
     for subject_id, group in df.groupby('subject_id'):
         n_rows = len(group)
         split_point = int(n_rows * 0.8)
         
-        # We append the original dataframe index to keep track
         train_indices.extend(group.index[:split_point].tolist())
         test_indices.extend(group.index[split_point:].tolist())
         
@@ -39,7 +34,6 @@ def main():
     X_train = scaler.fit_transform(X_train_raw)
     X_test = scaler.transform(X_test_raw)
     
-    # 1. Logistic Regression
     print("\nTraining Logistic Regression on Chronological Split...")
     lr_model = LogisticRegression(penalty='l1', solver='liblinear', C=1.0, max_iter=50)
     lr_model.fit(X_train, y_train)
@@ -47,7 +41,6 @@ def main():
     acc = accuracy_score(y_test, lr_pred)
     
     print(f"Logistic Regression Chronological Accuracy: {acc * 100:.2f}%")
-    # Prepare Tensors for PyTorch
     import torch
     import torch.nn as nn
     import torch.optim as optim
