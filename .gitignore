@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.venv/
+env/
+.env
+history.db
+
+# Node
+node_modules/
+dist/
+.DS_Store
+.env.local
+
+# Mac
+.DS_Store

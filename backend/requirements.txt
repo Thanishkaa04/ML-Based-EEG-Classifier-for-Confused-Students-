@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+websockets
+torch
+torchvision
+scikit-learn
+pandas
+numpy
+joblib
+python-multipart
