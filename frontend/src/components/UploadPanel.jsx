@@ -84,7 +84,7 @@ export default function UploadPanel({ onUploadSuccess }) {
     <div className="glass-panel" style={{ height: 'fit-content' }}>
       <h2 className="panel-title">Custom Data Pipeline</h2>
       <p className="text-muted" style={{ marginBottom: '1.5rem', lineHeight: '1.5' }}>
-        AURA-BCI allows researchers to upload unseen EEG datasets to pass through the models for blind validation. 
+        This platform allows researchers to upload unseen EEG datasets to pass through the models for blind validation. 
         Please upload a CSV containing exactly 11 standardized features per row (Attention, Mediation, Raw, Delta, Theta, etc.).
       </p>
 
