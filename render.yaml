@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: thanishkaa-eeg-backend
+    runtime: docker
+    branch: deploy/eeg-vercel
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    healthCheckPath: /
+    autoDeployTrigger: commit
