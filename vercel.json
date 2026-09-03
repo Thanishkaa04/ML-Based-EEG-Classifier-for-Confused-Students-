@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "fluid": true,
+  "functions": {
+    "backend/vercel_app.py": {
+      "memory": 3009,
+      "maxDuration": 300,
+      "excludeFiles": "{backend/test_*.py,backend/train.py,frontend/**,videos/**,demographic_info.csv,hyperparameter_search.py,test_feature_engineering.py,train_models.py}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/backend/vercel_app.py"
+    }
+  ]
+}
